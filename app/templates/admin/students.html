@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Manage Students - Uni-VER-city College{% endblock %}
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-blue-800">Manage Students</h2>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6">
+    {% if students %}
+    <div class="mb-4">
+        <label for="students-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <input type="search" id="students-search" placeholder="Search by ID, name, or email..."
+            class="w-full md:w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <table id="students-table" class="w-full text-sm text-left">
+        <thead class="bg-blue-800 text-white">
+            <tr>
+                <th class="px-4 py-2 rounded-tl-lg">ID</th>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Email</th>
+                <th class="px-4 py-2 rounded-tr-lg">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in students %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-2">{{ s.id }}</td>
+                <td class="px-4 py-2">{{ s.name }}</td>
+                <td class="px-4 py-2">{{ s.email }}</td>
+                <td class="px-4 py-2">
+                    <div class="flex flex-wrap items-center gap-1">
+                        <a href="{{ url_for('admin.view_student', student_id=s.id) }}"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-xs">
+                            View
+                        </a>
+                        <a href="{{ url_for('admin.edit_student', student_id=s.id) }}"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-full text-xs">
+                            Edit
+                        </a>
+                        <form method="POST" action="{{ url_for('admin.delete_student', student_id=s.id) }}"
+                            class="inline" onsubmit="return confirm('Delete this student?');">
+                            <button type="submit"
+                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="students-no-results" class="hidden text-gray-400 text-center py-6">No students match your search.</p>
+    {% else %}
+    <p class="text-gray-400 text-center py-6">No students registered yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/table-search.js') }}"></script>
+<script>initTableSearch('students-search', 'students-table', 'students-no-results');</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Available Subjects - Uni-VER-city College{% endblock %}
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-blue-800">Available Subjects</h2>
+    <p class="text-gray-500">Click Enroll to add a subject.</p>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6">
+    {% if subjects %}
+    <div class="mb-4">
+        <label for="subjects-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <input type="search" id="subjects-search" placeholder="Search by code, name, or schedule..."
+            class="w-full md:w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <table id="subjects-table" class="w-full text-sm text-left">
+        <thead class="bg-blue-800 text-white">
+            <tr>
+                <th class="px-4 py-2 rounded-tl-lg">Code</th>
+                <th class="px-4 py-2">Subject Name</th>
+                <th class="px-4 py-2">Units</th>
+                <th class="px-4 py-2">Schedule</th>
+                <th class="px-4 py-2">Slots</th>
+                <th class="px-4 py-2 rounded-tr-lg">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in subjects %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-2">{{ s.code }}</td>
+                <td class="px-4 py-2">{{ s.name }}</td>
+                <td class="px-4 py-2">{{ s.units }}</td>
+                <td class="px-4 py-2">{{ s.schedule }}</td>
+                <td class="px-4 py-2">{{ s.slots }}</td>
+                <td class="px-4 py-2">
+                    {% if s.id in enrolled_ids %}
+                        <span class="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs">Enrolled</span>
+                    {% elif s.slots <= 0 %}
+                        <span class="bg-red-100 text-red-500 px-3 py-1 rounded-full text-xs">Full</span>
+                    {% else %}
+                        <form method="POST" action="{{ url_for('student.enroll', subject_id=s.id) }}">
+                            <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-xs">
+                                Enroll
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="subjects-no-results" class="hidden text-gray-400 text-center py-6">No subjects match your search.</p>
+    {% else %}
+    <p class="text-gray-400 text-center py-6">No subjects available yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/table-search.js') }}"></script>
+<script>initTableSearch('subjects-search', 'subjects-table', 'subjects-no-results');</script>
+{% endblock %}

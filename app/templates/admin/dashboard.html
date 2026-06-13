@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - Uni-VER-city College{% endblock %}
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-blue-800">Admin Dashboard</h2>
+    <p class="text-gray-500">Overview of the enrollment system.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl font-bold text-blue-800">{{ total_students }}</p>
+        <p class="text-gray-500 mt-2">Total Students</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl font-bold text-green-600">{{ total_subjects }}</p>
+        <p class="text-gray-500 mt-2">Total Subjects</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl font-bold text-purple-600">{{ total_enrollments }}</p>
+        <p class="text-gray-500 mt-2">Total Enrollments</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <a href="{{ url_for('admin.subjects') }}"
+        class="bg-white rounded-xl shadow p-6 hover:shadow-md transition flex items-center gap-4">
+        <div>
+            <p class="font-semibold text-gray-700">Manage Subjects</p>
+            <p class="text-sm text-gray-400">Add, edit, or delete subjects</p>
+        </div>
+    </a>
+    <a href="{{ url_for('admin.students') }}"
+        class="bg-white rounded-xl shadow p-6 hover:shadow-md transition flex items-center gap-4">
+        <div>
+            <p class="font-semibold text-gray-700">Manage Students</p>
+            <p class="text-sm text-gray-400">View all registered students</p>
+        </div>
+    </a>
+    <a href="{{ url_for('admin.grades') }}"
+        class="bg-white rounded-xl shadow p-6 hover:shadow-md transition flex items-center gap-4">
+        <div>
+            <p class="font-semibold text-gray-700">Manage Grades</p>
+            <p class="text-sm text-gray-400">Assign grades to students</p>
+        </div>
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Manage Subjects - Uni-VER-city College{% endblock %}
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-blue-800">Manage Subjects</h2>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Add New Subject</h3>
+    <form method="POST" action="{{ url_for('admin.subjects') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div>
+            <label for="code" class="block text-sm font-medium text-gray-700 mb-1">Subject Code</label>
+            <input type="text" id="code" name="code" placeholder="e.g. CS101" required
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Subject Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Introduction to Computing" required
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="units" class="block text-sm font-medium text-gray-700 mb-1">Units</label>
+            <input type="number" id="units" name="units" placeholder="e.g. 3" required
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="schedule" class="block text-sm font-medium text-gray-700 mb-1">Schedule</label>
+            <input type="text" id="schedule" name="schedule" placeholder="e.g. MWF 8-9AM"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="slots" class="block text-sm font-medium text-gray-700 mb-1">Slots</label>
+            <input type="number" id="slots" name="slots" placeholder="e.g. 40" value="40"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit"
+            class="md:col-span-5 bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 rounded-lg transition">
+            Add Subject
+        </button>
+    </form>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">All Subjects</h3>
+    {% if subjects %}
+    <div class="mb-4">
+        <label for="subjects-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <input type="search" id="subjects-search" placeholder="Search by code, name, schedule..."
+            class="w-full md:w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <table id="subjects-table" class="w-full text-sm text-left">
+        <thead class="bg-blue-800 text-white">
+            <tr>
+                <th class="px-4 py-2 rounded-tl-lg">Code</th>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Units</th>
+                <th class="px-4 py-2">Schedule</th>
+                <th class="px-4 py-2">Slots</th>
+                <th class="px-4 py-2 rounded-tr-lg">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in subjects %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-2">{{ s.code }}</td>
+                <td class="px-4 py-2">{{ s.name }}</td>
+                <td class="px-4 py-2">{{ s.units }}</td>
+                <td class="px-4 py-2">{{ s.schedule }}</td>
+                <td class="px-4 py-2">{{ s.slots }}</td>
+                <td class="px-4 py-2">
+                    <div class="flex flex-wrap items-center gap-1">
+                        <a href="{{ url_for('admin.view_subject', subject_id=s.id) }}"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-xs">
+                            View
+                        </a>
+                        <a href="{{ url_for('admin.edit_subject', subject_id=s.id) }}"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-full text-xs">
+                            Edit
+                        </a>
+                        <form method="POST" action="{{ url_for('admin.delete_subject', subject_id=s.id) }}"
+                            class="inline" onsubmit="return confirm('Delete this subject?');">
+                            <button type="submit"
+                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="subjects-no-results" class="hidden text-gray-400 text-center py-6">No subjects match your search.</p>
+    {% else %}
+    <p class="text-gray-400 text-center py-6">No subjects yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/table-search.js') }}"></script>
+<script>initTableSearch('subjects-search', 'subjects-table', 'subjects-no-results');</script>
+{% endblock %}

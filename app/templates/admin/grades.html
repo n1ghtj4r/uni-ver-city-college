@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Manage Grades - Uni-VER-city College{% endblock %}
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-blue-800">Manage Grades</h2>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6">
+    {% if enrollments %}
+    <div class="mb-4">
+        <label for="grades-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <input type="search" id="grades-search" placeholder="Search by student, subject, or grade..."
+            class="w-full md:w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <table id="grades-table" class="w-full text-sm text-left">
+        <thead class="bg-blue-800 text-white">
+            <tr>
+                <th class="px-4 py-2 rounded-tl-lg">Student</th>
+                <th class="px-4 py-2">Subject</th>
+                <th class="px-4 py-2">Current Grade</th>
+                <th class="px-4 py-2 rounded-tr-lg">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in enrollments %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-2">{{ e.student.name }}</td>
+                <td class="px-4 py-2">{{ e.subject.name }}</td>
+                <td class="px-4 py-2">{{ e.grade.grade if e.grade else 'N/A' }}</td>
+                <td class="px-4 py-2">
+                    <form method="POST" action="{{ url_for('admin.grades') }}" class="flex gap-2">
+                        <input type="hidden" name="enrollment_id" value="{{ e.id }}">
+                        <input type="number" name="grade" placeholder="Grade" step="0.1" min="1" max="5"
+                            value="{{ e.grade.grade if e.grade else '' }}"
+                            class="border border-gray-300 rounded px-2 py-1 w-20 text-xs">
+                        <select name="remarks" class="border border-gray-300 rounded px-2 py-1 text-xs">
+                            <option value="Passed" {% if e.grade and e.grade.remarks =='Passed' %}selected{% endif %}>Passed</option>
+                            <option value="Failed" {% if e.grade and e.grade.remarks =='Failed' %}selected{% endif %}>Failed</option>
+                        </select>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">
+                            Save
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="grades-no-results" class="hidden text-gray-400 text-center py-6">No enrollments match your search.</p>
+    {% else %}
+    <p class="text-gray-400 text-center py-6">No enrollments yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/table-search.js') }}"></script>
+<script>initTableSearch('grades-search', 'grades-table', 'grades-no-results');</script>
+{% endblock %}

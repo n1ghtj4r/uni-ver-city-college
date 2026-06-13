@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard - Uni-VER-city College{% endblock %}
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-blue-800">Welcome, {{ current_user.name }}!</h2>
+    <p class="text-gray-500">Here are your enrolled subjects.</p>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">My Enrollments</h3>
+    {% if enrollments %}
+    <div class="mb-4">
+        <label for="enrollments-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <input type="search" id="enrollments-search" placeholder="Search by code, name, or schedule..."
+            class="w-full md:w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <table id="enrollments-table" class="w-full text-sm text-left">
+        <thead class="bg-blue-800 text-white">
+            <tr>
+                <th class="px-4 py-2 rounded-tl-lg">Subject Code</th>
+                <th class="px-4 py-2">Subject Name</th>
+                <th class="px-4 py-2">Units</th>
+                <th class="px-4 py-2">Schedule</th>
+                <th class="px-4 py-2 rounded-tr-lg">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in enrollments %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-2">{{ e.subject.code }}</td>
+                <td class="px-4 py-2">{{ e.subject.name }}</td>
+                <td class="px-4 py-2">{{ e.subject.units }}</td>
+                <td class="px-4 py-2">{{ e.subject.schedule }}</td>
+                <td class="px-4 py-2">
+                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                        {{ e.status }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="enrollments-no-results" class="hidden text-gray-400 text-center py-6">No enrollments match your search.</p>
+    {% else %}
+    <p class="text-gray-400 text-center py-6">No enrolled subjects yet.
+        <a href="{{ url_for('student.subjects') }}" class="text-blue-600 hover:underline">Enroll now!</a>
+    </p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/table-search.js') }}"></script>
+<script>initTableSearch('enrollments-search', 'enrollments-table', 'enrollments-no-results');</script>
+{% endblock %}

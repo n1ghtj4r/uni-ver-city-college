@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}{{ student.name }} - Uni-VER-city College{% endblock %}
+{% block content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-bold text-blue-800">Student Details</h2>
+        <p class="text-gray-500">{{ student.name }}</p>
+    </div>
+    <div class="flex gap-2">
+        <a href="{{ url_for('admin.edit_student', student_id=student.id) }}"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            Edit
+        </a>
+        <a href="{{ url_for('admin.students') }}"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            Back
+        </a>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Information</h3>
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+            <dt class="font-medium text-gray-500">Student ID</dt>
+            <dd class="text-gray-800 mt-1">{{ student.id }}</dd>
+        </div>
+        <div>
+            <dt class="font-medium text-gray-500">Name</dt>
+            <dd class="text-gray-800 mt-1">{{ student.name }}</dd>
+        </div>
+        <div>
+            <dt class="font-medium text-gray-500">Email</dt>
+            <dd class="text-gray-800 mt-1">{{ student.email }}</dd>
+        </div>
+        <div>
+            <dt class="font-medium text-gray-500">Total Enrollments</dt>
+            <dd class="text-gray-800 mt-1">{{ enrollments|length }}</dd>
+        </div>
+    </dl>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Enrollments</h3>
+    {% if enrollments %}
+    <div class="mb-4">
+        <label for="enrollments-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <input type="search" id="enrollments-search" placeholder="Search by subject, schedule, or grade..."
+            class="w-full md:w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <table id="enrollments-table" class="w-full text-sm text-left">
+        <thead class="bg-blue-800 text-white">
+            <tr>
+                <th class="px-4 py-2 rounded-tl-lg">Subject Code</th>
+                <th class="px-4 py-2">Subject Name</th>
+                <th class="px-4 py-2">Schedule</th>
+                <th class="px-4 py-2">Grade</th>
+                <th class="px-4 py-2 rounded-tr-lg">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in enrollments %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-2">{{ e.subject.code }}</td>
+                <td class="px-4 py-2">{{ e.subject.name }}</td>
+                <td class="px-4 py-2">{{ e.subject.schedule or '—' }}</td>
+                <td class="px-4 py-2">{{ e.grade.grade if e.grade and e.grade.grade else 'N/A' }}</td>
+                <td class="px-4 py-2">{{ e.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="enrollments-no-results" class="hidden text-gray-400 text-center py-6">No enrollments match your search.</p>
+    {% else %}
+    <p class="text-gray-400 text-center py-6">No enrollments yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/table-search.js') }}"></script>
+<script>initTableSearch('enrollments-search', 'enrollments-table', 'enrollments-no-results');</script>
+{% endblock %}
