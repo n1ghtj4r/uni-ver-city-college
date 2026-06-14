@@ -96,12 +96,26 @@ def delete_subject(subject_id):
     flash('Subject deleted!', 'success')
     return redirect(url_for('admin.subjects'))
 
-@admin.route('/students')
+@admin.route('/students', methods=['GET', 'POST'])
 @login_required
 def students():
     if current_user.role != 'admin':
         flash('Access denied.', 'error')
         return redirect(url_for('student.dashboard'))
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        existing = User.query.filter_by(email=email).first()
+        if existing:
+            flash('Email already registered!', 'error')
+            return redirect(url_for('admin.students'))
+
+        user = User(name=name, email=email, password=password, role='student')
+        db.session.add(user)
+        db.session.commit()
+        flash('Student registered successfully!', 'success')
     students = User.query.filter_by(role='student').all()
     return render_template('admin/students.html', students=students)
 
@@ -191,3 +205,19 @@ def grades():
         flash('Grade updated!', 'success')
     enrollments = Enrollment.query.all()
     return render_template('admin/grades.html', enrollments=enrollments)
+
+@admin.route('/grades/drop/<int:enrollment_id>', methods=['POST'])
+@login_required
+def drop_enrollment(enrollment_id):
+    if current_user.role != 'admin':
+        flash('Access denied.', 'error')
+        return redirect(url_for('student.dashboard'))
+    enrollment = Enrollment.query.get_or_404(enrollment_id)
+    grade = Grade.query.filter_by(enrollment_id=enrollment_id).first()
+    if grade:
+        db.session.delete(grade)
+    enrollment.subject.slots += 1
+    db.session.delete(enrollment)
+    db.session.commit()
+    flash('Student dropped from subject successfully!', 'success')
+    return redirect(url_for('admin.grades'))

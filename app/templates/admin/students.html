@@ -5,7 +5,33 @@
     <h2 class="text-2xl font-bold text-blue-800">Manage Students</h2>
 </div>
 
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Register Student</h3>
+    <form method="POST" action="{{ url_for('admin.students') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Juan Dela Cruz" required
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" id="email" name="email" placeholder="e.g. juan@email.com" required
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" id="password" name="password" placeholder="Set student password" required
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit"
+            class="md:col-span-3 bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 rounded-lg transition">
+            Register Student
+        </button>
+    </form>
+</div>
+
 <div class="bg-white rounded-xl shadow p-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">All Students</h3>
     {% if students %}
     <div class="mb-4">
         <label for="students-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>

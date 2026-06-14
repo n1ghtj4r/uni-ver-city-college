@@ -18,7 +18,7 @@
                 <th class="px-4 py-2 rounded-tl-lg">Student</th>
                 <th class="px-4 py-2">Subject</th>
                 <th class="px-4 py-2">Current Grade</th>
-                <th class="px-4 py-2 rounded-tr-lg">Action</th>
+                <th class="px-4 py-2 rounded-tr-lg">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -28,20 +28,30 @@
                 <td class="px-4 py-2">{{ e.subject.name }}</td>
                 <td class="px-4 py-2">{{ e.grade.grade if e.grade else 'N/A' }}</td>
                 <td class="px-4 py-2">
-                    <form method="POST" action="{{ url_for('admin.grades') }}" class="flex gap-2">
-                        <input type="hidden" name="enrollment_id" value="{{ e.id }}">
-                        <input type="number" name="grade" placeholder="Grade" step="0.1" min="1" max="5"
-                            value="{{ e.grade.grade if e.grade else '' }}"
-                            class="border border-gray-300 rounded px-2 py-1 w-20 text-xs">
-                        <select name="remarks" class="border border-gray-300 rounded px-2 py-1 text-xs">
-                            <option value="Passed" {% if e.grade and e.grade.remarks =='Passed' %}selected{% endif %}>Passed</option>
-                            <option value="Failed" {% if e.grade and e.grade.remarks =='Failed' %}selected{% endif %}>Failed</option>
-                        </select>
-                        <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">
-                            Save
-                        </button>
-                    </form>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <form method="POST" action="{{ url_for('admin.grades') }}" class="flex gap-2 items-center">
+                            <input type="hidden" name="enrollment_id" value="{{ e.id }}">
+                            <input type="number" name="grade" placeholder="Grade" step="0.1" min="1" max="5"
+                                value="{{ e.grade.grade if e.grade else '' }}"
+                                class="border border-gray-300 rounded px-2 py-1 w-20 text-xs">
+                            <select name="remarks" class="border border-gray-300 rounded px-2 py-1 text-xs">
+                                <option value="Passed" {% if e.grade and e.grade.remarks =='Passed' %}selected{% endif %}>Passed</option>
+                                <option value="Failed" {% if e.grade and e.grade.remarks =='Failed' %}selected{% endif %}>Failed</option>
+                            </select>
+                            <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">
+                                Save
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.drop_enrollment', enrollment_id=e.id) }}"
+                            class="inline"
+                            onsubmit="return confirm('Drop {{ e.student.name }} from {{ e.subject.name }}?');">
+                            <button type="submit"
+                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">
+                                Drop
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

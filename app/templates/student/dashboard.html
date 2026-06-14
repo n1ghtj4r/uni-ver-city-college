@@ -3,15 +3,15 @@
 {% block content %}
 <div class="mb-6">
     <h2 class="text-2xl font-bold text-blue-800">Welcome, {{ current_user.name }}!</h2>
-    <p class="text-gray-500">Here are your enrolled subjects.</p>
+    <p class="text-gray-500">View your enrolled courses and grades below.</p>
 </div>
 
 <div class="bg-white rounded-xl shadow p-6">
-    <h3 class="text-lg font-semibold text-gray-700 mb-4">My Enrollments</h3>
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">My Courses &amp; Grades</h3>
     {% if enrollments %}
     <div class="mb-4">
         <label for="enrollments-search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-        <input type="search" id="enrollments-search" placeholder="Search by code, name, or schedule..."
+        <input type="search" id="enrollments-search" placeholder="Search by code, name, schedule, grade, or remarks..."
             class="w-full md:w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
     </div>
     <table id="enrollments-table" class="w-full text-sm text-left">
@@ -21,6 +21,8 @@
                 <th class="px-4 py-2">Subject Name</th>
                 <th class="px-4 py-2">Units</th>
                 <th class="px-4 py-2">Schedule</th>
+                <th class="px-4 py-2">Grade</th>
+                <th class="px-4 py-2">Remarks</th>
                 <th class="px-4 py-2 rounded-tr-lg">Status</th>
             </tr>
         </thead>
@@ -30,7 +32,19 @@
                 <td class="px-4 py-2">{{ e.subject.code }}</td>
                 <td class="px-4 py-2">{{ e.subject.name }}</td>
                 <td class="px-4 py-2">{{ e.subject.units }}</td>
-                <td class="px-4 py-2">{{ e.subject.schedule }}</td>
+                <td class="px-4 py-2">{{ e.subject.schedule or '—' }}</td>
+                <td class="px-4 py-2">{{ e.grade.grade if e.grade else 'N/A' }}</td>
+                <td class="px-4 py-2">
+                    {% if e.grade %}
+                        <span class="px-2 py-1 rounded-full text-xs font-medium
+                            {% if e.grade.remarks == 'Passed' %} bg-green-100 text-green-700
+                            {% else %} bg-red-100 text-red-700 {% endif %}">
+                            {{ e.grade.remarks }}
+                        </span>
+                    {% else %}
+                        <span class="bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs">Pending</span>
+                    {% endif %}
+                </td>
                 <td class="px-4 py-2">
                     <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
                         {{ e.status }}
